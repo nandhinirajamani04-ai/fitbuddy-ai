@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>FitBuddy - All Users & Workout Plans</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .container {
+            width: 96%;
+            margin: auto;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background: #4169d8;
+            color: white;
+            text-decoration: none;
+            padding: 13px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .back-btn:hover {
+            background: #3155bd;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4169d8;
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+
+        .table-container {
+            width: 100%;
+            overflow-x: auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.10);
+        }
+
+        table {
+            width: 100%;
+            min-width: 1400px;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1976d2;
+            color: white;
+            padding: 12px 10px;
+            text-align: left;
+            font-size: 14px;
+            border: 1px solid #ddd;
+        }
+
+        td {
+            padding: 12px 10px;
+            vertical-align: top;
+            border: 1px solid #ddd;
+            font-size: 14px;
+            color: #333;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fbff;
+        }
+
+        tr:hover {
+            background: #eef5ff;
+        }
+
+        .id-column {
+            width: 80px;
+        }
+
+        .name-column {
+            width: 120px;
+        }
+
+        .age-column {
+            width: 70px;
+        }
+
+        .weight-column {
+            width: 90px;
+        }
+
+        .goal-column {
+            width: 130px;
+        }
+
+        .intensity-column {
+            width: 100px;
+        }
+
+        .plan-column {
+            width: 380px;
+            min-width: 380px;
+        }
+
+        .plan-text {
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+
+        .empty-plan {
+            color: #888;
+            font-style: italic;
+        }
+
+        .no-users {
+            text-align: center;
+            padding: 50px;
+            font-size: 20px;
+            color: #777;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <!-- BACK BUTTON -->
+
+    <a href="/" class="back-btn">
+        ← Back to Home
+    </a>
+
+
+    <!-- PAGE TITLE -->
+
+    <h1>
+        👥 FitBuddy - All Users & Workout Plans
+    </h1>
+
+
+    <!-- TABLE -->
+
+    <div class="table-container">
+
+        {% if users %}
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th class="id-column">
+                        User ID
+                    </th>
+
+                    <th class="name-column">
+                        Name
+                    </th>
+
+                    <th class="age-column">
+                        Age
+                    </th>
+
+                    <th class="weight-column">
+                        Weight (kg)
+                    </th>
+
+                    <th class="goal-column">
+                        Goal
+                    </th>
+
+                    <th class="intensity-column">
+                        Intensity
+                    </th>
+
+                    <th class="plan-column">
+                        Original Plan
+                    </th>
+
+                    <th class="plan-column">
+                        Updated Plan
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% for user in users %}
+
+                <tr>
+
+                    <!-- USER ID -->
+
+                    <td>
+                        {{ user["user_id"] }}
+                    </td>
+
+
+                    <!-- NAME -->
+
+                    <td>
+                        {{ user["name"] }}
+                    </td>
+
+
+                    <!-- AGE -->
+
+                    <td>
+                        {{ user["age"] }}
+                    </td>
+
+
+                    <!-- WEIGHT -->
+
+                    <td>
+                        {{ user["weight"] }}
+                    </td>
+
+
+                    <!-- GOAL -->
+
+                    <td>
+                        {{ user["goal"] }}
+                    </td>
+
+
+                    <!-- INTENSITY -->
+
+                    <td>
+                        {{ user["intensity"] }}
+                    </td>
+
+
+                    <!-- ORIGINAL PLAN -->
+
+                    <td class="plan-text">
+
+                        {% if user["original_plan"] %}
+
+                            {{ user["original_plan"] }}
+
+                        {% else %}
+
+                            <span class="empty-plan">
+                                No original plan
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- UPDATED PLAN -->
+
+                    <td class="plan-text">
+
+                        {% if user["updated_plan"] %}
+
+                            {{ user["updated_plan"] }}
+
+                        {% else %}
+
+                            <span class="empty-plan">
+                                No updated plan
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+            {% endfor %}
+
+            </tbody>
+
+        </table>
+
+
+        {% else %}
+
+            <div class="no-users">
+                No users found
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

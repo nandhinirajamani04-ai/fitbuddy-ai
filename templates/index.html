@@ -1,0 +1,517 @@
+ <!DOCTYPE html>  <html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>FitBuddy - AI Workout Generator</title>  
+
+<style>  
+    * {  
+        box-sizing: border-box;  
+    }  
+
+    body {  
+        margin: 0;  
+        font-family: Arial, sans-serif;  
+        background: #f3f7f5;  
+        min-height: 100vh;  
+    }  
+
+    header {  
+        background: linear-gradient(135deg, #198754, #20c997);  
+        color: white;  
+        text-align: center;  
+        padding: 28px 20px;  
+    }  
+
+    header h1 {  
+        margin: 0;  
+        font-size: 34px;  
+    }  
+
+    header p {  
+        margin-top: 8px;  
+        font-size: 17px;  
+    }  
+
+    .hero {  
+        min-height: calc(100vh - 130px);  
+        display: flex;  
+        justify-content: center;  
+        align-items: center;  
+        padding: 40px 20px;  
+
+        background:  
+            linear-gradient(  
+                rgba(255,255,255,0.78),  
+                rgba(255,255,255,0.78)  
+            ),  
+            url("https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&w=1600&q=80");  
+
+        background-size: cover;  
+        background-position: center;  
+    }  
+
+    .card {  
+        width: 100%;  
+        max-width: 520px;  
+        background: white;  
+        padding: 32px;  
+        border-radius: 18px;  
+        box-shadow: 0 10px 35px rgba(0,0,0,0.15);  
+    }  
+
+    .card h2 {  
+        text-align: center;  
+        color: #198754;  
+        margin-top: 0;  
+        margin-bottom: 25px;  
+    }  
+
+    .form-group {  
+        margin-bottom: 16px;  
+    }  
+
+    label {  
+        display: block;  
+        font-weight: bold;  
+        margin-bottom: 6px;  
+        color: #333;  
+    }  
+
+    input,  
+    select {  
+        width: 100%;  
+        padding: 12px;  
+        border: 1px solid #ccc;  
+        border-radius: 8px;  
+        font-size: 15px;  
+    }  
+
+    input:focus,  
+    select:focus {  
+        outline: none;  
+        border-color: #198754;  
+    }  
+
+    button {  
+        width: 100%;  
+        padding: 14px;  
+        border: none;  
+        border-radius: 8px;  
+        background: #198754;  
+        color: white;  
+        font-size: 17px;  
+        font-weight: bold;  
+        cursor: pointer;  
+        margin-top: 10px;  
+    }  
+
+    button:hover {  
+        background: #146c43;  
+    }  
+
+    .result {  
+        margin-top: 25px;  
+        padding: 20px;  
+        background: #f0fff8;  
+        border-left: 5px solid #198754;  
+        border-radius: 8px;  
+        display: none;  
+    }  
+
+    .result h3 {  
+        margin-top: 0;  
+        color: #198754;  
+    }  
+
+    @media (max-width: 600px) {  
+        header h1 {  
+            font-size: 28px;  
+        }  
+
+        .card {  
+            padding: 22px;  
+        }  
+    }  
+</style>
+
+</head>  <body>  <header>  
+    <h1>💪 FitBuddy - AI Workout Generator</h1>  
+    <p>Your personal AI-powered fitness assistant</p>  
+</header>  <section class="hero">  <div class="card">  
+
+    <h2>🏋️ Create Your Fitness Plan</h2>  
+
+    <form id="fitnessForm">  
+
+        <div class="form-group">  
+            <label for="name">Name</label>  
+            <input  
+                type="text"  
+                id="name"  
+                name="name"  
+                placeholder="Enter your name"  
+                required  
+            >  
+        </div>  
+
+        <div class="form-group">  
+            <label for="user_id">User ID</label>  
+            <input  
+                type="text"  
+                id="user_id"  
+                name="user_id"  
+                placeholder="Enter your user ID"  
+                required  
+            >  
+        </div>  
+
+        <div class="form-group">  
+            <label for="age">Age</label>  
+            <input  
+                type="number"  
+                id="age"  
+                name="age"  
+                placeholder="Enter your age"  
+                required  
+            >  
+        </div>  
+
+        <div class="form-group">  
+            <label for="weight">Weight (kg)</label>  
+            <input  
+                type="number"  
+                id="weight"  
+                name="weight"  
+                placeholder="Enter your weight"  
+                required  
+            >  
+        </div>  
+
+        <div class="form-group">  
+            <label for="goal">Fitness Goal</label>  
+            <input  
+                type="text"  
+                id="goal"  
+                name="goal"  
+                placeholder="Example: weight loss"  
+                required  
+            >  
+        </div>  
+
+        <div class="form-group">  
+            <label for="intensity">Workout Intensity</label>  
+
+            <select id="intensity" name="intensity">  
+                <option value="Low">Low</option>  
+                <option value="Medium" selected>Medium</option>  
+                <option value="High">High</option>  
+            </select>  
+        </div>  
+
+        <button type="submit">  
+            Generate 7-Day Plan  
+        </button>  
+
+    </form>  
+
+    <div class="result" id="result">  
+        <h3>🎯 Your Workout Plan</h3>  
+        <p id="resultText"></p>  
+    </div>  
+
+</div>
+
+</section> 
+<script>
+document.getElementById("fitnessForm").addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const userId = document.getElementById("user_id").value.trim();
+    const age = document.getElementById("age").value;
+    const weight = document.getElementById("weight").value;
+    const goal = document.getElementById("goal").value.trim();
+    const intensity = document.getElementById("intensity").value;
+
+    const result = document.getElementById("result");
+    const resultText = document.getElementById("resultText");
+
+    result.style.display = "block";
+
+    resultText.innerHTML = `
+
+        <p>Hello <b>${name}</b>! 👋</p>
+
+        <p>
+            Your goal: <b>${goal}</b><br>
+            Workout intensity: <b>${intensity}</b>
+        </p>
+
+        <h3>🏋️ Your 7-Day Workout Plan</h3>
+
+        <div style="margin-bottom:18px;">
+            <b>Day 1 – Full Body 💪</b><br>
+            Squats – 3 × 12<br>
+            Push-ups – 3 × 10<br>
+            Lunges – 3 × 10<br>
+            Plank – 3 × 30 sec
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <b>Day 2 – Upper Body 🏋️</b><br>
+            Push-ups – 3 × 10<br>
+            Shoulder Press – 3 × 12<br>
+            Biceps Curls – 3 × 12<br>
+            Triceps Dips – 3 × 10
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <b>Day 3 – Lower Body 🦵</b><br>
+            Squats – 3 × 15<br>
+            Lunges – 3 × 12<br>
+            Glute Bridges – 3 × 15<br>
+            Calf Raises – 3 × 15
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <b>Day 4 – Cardio ❤️</b><br>
+            Jumping Jacks – 3 × 30 sec<br>
+            High Knees – 3 × 30 sec<br>
+            Mountain Climbers – 3 × 20<br>
+            Brisk Walking – 20 minutes
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <b>Day 5 – Core 🔥</b><br>
+            Crunches – 3 × 15<br>
+            Leg Raises – 3 × 12<br>
+            Russian Twists – 3 × 15<br>
+            Plank – 3 × 40 sec
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <b>Day 6 – Full Body 🔥</b><br>
+            Squats – 3 × 12<br>
+            Push-ups – 3 × 10<br>
+            Burpees – 3 × 8<br>
+            Plank – 3 × 30 sec
+        </div>
+
+        <div style="margin-bottom:18px;">
+            <b>Day 7 – Rest & Recovery 🧘</b><br>
+            Light Walking – 20 minutes<br>
+            Full Body Stretching – 10 minutes<br>
+            Deep Breathing – 5 minutes
+        </div>
+
+        <hr>
+
+        <p>
+            ✅ Stay hydrated and take adequate rest between workouts.
+        </p>
+    `;
+
+    // Get the generated plan as plain text
+    const originalPlan = resultText.innerText;
+
+    // SAVE USER PLAN TO DATABASE
+    try {
+
+        const formData = new FormData();
+
+        formData.append("user_id", userId);
+        formData.append("name", name);
+        formData.append("age", age);
+        formData.append("weight", weight);
+        formData.append("goal", goal);
+        formData.append("intensity", intensity);
+        formData.append("original_plan", originalPlan);
+
+        const response = await fetch("/save-user-plan", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        console.log("SAVE RESULT:", data);
+
+        if (response.ok && data.success) {
+
+            console.log("User plan saved successfully");
+
+        } else {
+
+            alert("Plan save failed: " + (data.message || "Unknown error"));
+
+        }
+
+    } catch (error) {
+
+        console.error("Save Error:", error);
+
+        alert("Could not save the workout plan.");
+
+    }
+
+    result.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+    });
+
+});
+</script>
+<!-- FEEDBACK SECTION -->
+<div class="feedback-box">
+
+    <h2>📩 Share Your Feedback</h2>
+
+    <div class="form-group">
+        <label for="feedback_user_id">
+            Your Unique User ID:
+        </label>
+
+        <input
+            type="text"
+            id="feedback_user_id"
+            placeholder="Enter your User ID"
+            required
+        >
+    </div>
+
+    <div class="form-group">
+        <label for="feedback_text">
+            Your Feedback:
+        </label>
+
+        <textarea
+            id="feedback_text"
+            placeholder="Write your feedback here..."
+            rows="5"
+            required
+        ></textarea>
+    </div>
+
+    <div id="feedbackMessage"></div>
+<button type="button"onclick="submitFeedback()">
+    Submit Feedback
+</button>
+<style>
+    .feedback-box {
+    margin-top: 30px;
+    padding: 28px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+}
+
+.feedback-box h2 {
+    text-align: center;
+    color: #198754;
+    margin-bottom: 25px;
+}
+
+.feedback-box textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    resize: vertical;
+}
+
+.feedback-box textarea:focus {
+    outline: none;
+    border-color: #198754;
+}
+
+#feedbackMessage {
+    margin-top: 15px;
+    padding: 12px;
+    border-radius: 8px;
+    font-weight: bold;
+    display: none;
+}
+</style>
+<script>
+async function submitFeedback() {
+
+    const userId = document.getElementById("feedback_user_id").value.trim();
+    const feedback = document.getElementById("feedback_text").value.trim();
+    const message = document.getElementById("feedbackMessage");
+
+    if (!userId || !feedback) {
+        message.innerHTML = "❌ Please enter User ID and Feedback.";
+        message.style.display = "block";
+        return;
+    }
+
+    try {
+
+        const formData = new FormData();
+
+        formData.append("user_id", userId);
+        formData.append("feedback", feedback);
+
+        const response = await fetch("/submit-feedback", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+
+            message.innerHTML =
+                "✅ Feedback submitted successfully!";
+
+            message.style.display = "block";
+
+            document.getElementById("feedback_text").value = "";
+
+        } else {
+
+            message.innerHTML =
+                "❌ " + (result.message || "Failed to submit feedback.");
+
+            message.style.display = "block";
+        }
+
+    } catch (error) {
+
+        console.error("Feedback Error:", error);
+
+        message.innerHTML =
+            "❌ Something went wrong. Please try again.";
+
+        message.style.display = "block";
+    }
+}
+</script>
+<a href="/view-all-users" class="all-users-btn">
+    👥 View All Users
+</a>
+<style>
+.all-users-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    margin: 20px 0;
+    background: #4f7cff;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.all-users-btn:hover {
+    background: #365fd6;
+}
+</style>
+
+</body>
+</html>
